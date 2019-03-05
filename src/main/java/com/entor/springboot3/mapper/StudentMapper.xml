@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Student">
+  <!-- 新增 -->
+  <insert id="add" parameterType="student">
+     insert into student(name,username,password,sex,age,birthday,createTime)
+     values(#{name},#{username},#{password},#{sex},#{age},#{birthday},#{createTime})
+  </insert>
+  
+  <!-- 批量新增 -->
+  <insert id="addMore" parameterType="Student">
+     insert into student(name,username,password,sex,age,birthday,createTime) values
+     <foreach collection="list" separator="," item="s">
+        (#{s.name},#{s.username},#{s.password},#{s.sex},#{s.age},#{s.birthday},#{s.createTime})
+     </foreach>
+  </insert>
+  
+  <!-- 修改 -->
+  <update id="update" parameterType="Student">
+     update student set 
+     name=#{name},
+     username=#{username},
+     password=#{password},
+     sex=#{sex},
+     age=#{age},
+     birthday=#{birthday},
+     createTime=#{createTime}
+     where id=#{id}
+  </update>
+  
+  <!-- 通过id查询  -->
+  <select id="queryById" parameterType="int" resultType="Student">
+     select id,name,username,password,sex,age,birthday,createTime from student where id=#{id}
+  </select>
+  
+  <!-- 查询所有 -->
+  <select id="queryAll" resultType="Student">
+    select id,name,username,password,sex,age,birthday,createTime from student where id&gt;100
+  </select>
+  
+  <!-- 分页查询 -->
+  <select id="queryByPage" parameterType="map" resultType="Student">
+    select id,name,username,password,sex,age,birthday,createTime from student
+    where 1=1
+    <if test="qid!=null and qid!=''">
+       id=#{qid}
+    </if>
+    <if test="qname!=null and qname!=''">
+       name=#{qname}
+    </if>
+    <if test="qusername!=null and qusername!=''">
+       username=#{qusername}
+    </if>
+    <if test="qsex!=null and qsex!='' and qsex!=-1">
+       sex=#{qsex}
+    </if>
+    <if test="qstartdate!=null and qstartdate!=''">
+       createTime&lt;#{qstartdate}
+    </if>
+    <if test="qenddate!=null and qenddate!=''">
+       createTime&gt;#{qenddate}
+    </if>
+     limit #{start},#{pageSize}
+  </select>
+  
+  <!--查询总记录数  -->
+  <select id="getTotals"  resultType="int">
+    select count(*) from student 
+  </select>
+  
+  <!-- 通过id删除 -->
+  <delete id="delete">
+    delete from student where id=#{id}
+  </delete>
+
+  <!-- 批量删除 -->
+  <delete id="deleteMore">
+     delete from student where id in 
+     <foreach collection="array" open="(" close=")" separator="," item="id">
+        #{id}
+     </foreach>
+  </delete>
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Classes">
+  <!-- 新增 -->
+  <insert id="add" parameterType="classes">
+     insert into classes(name)
+     values(#{name})
+  </insert>
+  
+  <!-- 批量新增 -->
+  <insert id="addMore" parameterType="classes">
+     insert into classes(name) values
+     <foreach collection="list" separator="," item="s">
+        (#{s.name})
+     </foreach>
+  </insert>
+  
+  <!-- 修改 -->
+  <update id="update" parameterType="classes">
+     update classes set 
+     name=#{name}
+     where id=#{id}
+  </update>
+  
+  <!-- 通过id查询  -->
+  <select id="queryById" parameterType="int" resultType="classes">
+     select id,name from classes where id=#{id}
+  </select>
+  
+  <!-- 查询所有 -->
+  <select id="queryAll" resultType="classes">
+    select id,name from classes where id&gt;100
+  </select>
+  
+  <!-- 分页查询 -->
+  <select id="queryByPage" parameterType="map" resultType="classes">
+    select id,name from classes limit #{start},#{pageSize}
+  </select>
+  
+  <!--查询总记录数  -->
+  <select id="getTotals"  resultType="int">
+    select count(*) from classes
+  </select>
+  
+  <!-- 通过id删除 -->
+  <delete id="delete">
+    delete from classes where id=#{id}
+  </delete>
+
+  <!-- 批量删除 -->
+  <delete id="deleteMore">
+     delete from classes where id in 
+     <foreach collection="array" open="(" close=")" separator="," item="id">
+        #{id}
+     </foreach>
+  </delete>
+</mapper>
